@@ -44,6 +44,7 @@ angular.module('afkl.lazyImage')
                 var currentImage = null; // current image url
                 var offset = options.offset ? options.offset : 50; // default offset
                 var alt = options.alt ? 'alt="' + options.alt + '"' : 'alt=""';
+                var reverse = options.reverse; // default false
 
                 var LOADING = 'afkl-lazy-image-loading';
 
@@ -100,6 +101,9 @@ angular.module('afkl.lazyImage')
                     return box.top + _containerScrollTop() - document.documentElement.clientTop;
                 };
 
+                var _elementHeight = function () {
+                    return element[0].clientHeight || 0;
+                };
 
                 var _elementOffsetContainer = function () {
                     if (element.offset) {
@@ -186,19 +190,30 @@ angular.module('afkl.lazyImage')
 
                 // Check if the container is in view for the first time. Utilized by the scroll and resize events.
                 var _onViewChange = function () {
+                    // check if the element is shown.
+                    if (element[0].style.display === 'hidden' || element[0].style.visibility === 'hidden') {
+                      return;
+                    }
+
                     // only do stuff when not set already
                     if (!loaded) {
 
                         // Config vars
-                        var remaining, shouldLoad, windowBottom;
+                        var remaining, shouldLoad;
 
                         var height = _containerInnerHeight();
                         var scroll = _containerScrollTop();
 
                         var elOffset = $container[0] === $window ? _elementOffset() : _elementOffsetContainer();
-                        windowBottom = $container[0] === $window ? height + scroll : height;
+                        var elBottom = elOffset + _elementHeight();
+                        var windowTop = $container[0] === $window ? scroll : 0;
+                        var windowBottom = windowTop + height;
 
-                        remaining = elOffset - windowBottom;
+                        if (reverse) {
+                          remaining = windowTop - elBottom;
+                        } else {
+                          remaining = elOffset - windowBottom;
+                        }
 
                         // Is our top of our image container in bottom of our viewport?
                         //console.log($container[0].className, _elementOffset(), _elementPosition(), height, scroll, remaining, elOffset);
