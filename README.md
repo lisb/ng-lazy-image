@@ -30,6 +30,7 @@ During loading a class 'afkl-lazy-image-loading' is set on the container so you 
 - "afkl-lazy-image-options": (optional object):
    * '{"background": true}' this will set correct background image on container, false by default
    * '{"offset": 200}' this will influence when to start loading the image, 50px by default
+   * '{"reverse": true}' this will set the direction of scrolling, false by default
    * '{"nolazy": true}' this will set the image at once and only change on resize
    * '{"alt": "caption for image"}' this will set alt attribute on image, empty by default
    * '{"className": "own-classname-image"}' className will be apended to the image
