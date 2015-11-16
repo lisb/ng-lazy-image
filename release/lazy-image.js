@@ -337,13 +337,18 @@ angular.module('afkl.lazyImage')
                 var timeout;
 
                 var images = attrs.afklLazyImage; // srcset attributes
-                var options = attrs.afklLazyImageOptions ? $parse(attrs.afklLazyImageOptions)(scope) : {}; // options (background, offset)
-
                 var img; // Angular element to image which will be placed
                 var currentImage = null; // current image url
-                var offset = options.offset ? options.offset : 50; // default offset
-                var alt = options.alt ? 'alt="' + options.alt + '"' : 'alt=""';
-                var reverse = options.reverse; // default false
+
+                var options;
+                var offset, alt, reverse;
+                var _setOptions = function() {
+                  options = attrs.afklLazyImageOptions ? $parse(attrs.afklLazyImageOptions)(scope) : {}; // options (background, offset)
+                  offset = options.offset ? options.offset : 50; // default offset
+                  alt = options.alt ? 'alt="' + options.alt + '"' : 'alt=""';
+                  reverse = options.reverse; // default false
+                };
+                _setOptions();
 
                 var LOADING = 'afkl-lazy-image-loading';
 
@@ -576,6 +581,11 @@ angular.module('afkl.lazyImage')
                     if (loaded) {
                         _placeImage();
                     }
+                });
+
+                attrs.$observe('afklLazyImageOptions', function () {
+                  _setOptions();
+                  _onResize();
                 });
 
                 // Image should be directly placed
